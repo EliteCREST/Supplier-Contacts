@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Supplier Contacts</title>
+<style>
+  /* ============================================================
+     ELITE STANDARD — Navy #1B2A4A + Blue #1F5FAD, Arial
+     ============================================================ */
+  :root {
+    --navy: #1B2A4A;
+    --blue: #1F5FAD;
+    --gold: #C9A961;
+    --bg: #F5F7FB;
+    --panel: #FFFFFF;
+    --border: #D7DEEA;
+    --muted: #6A7891;
+    --text: #1B2A4A;
+    --row-alt: #F9FBFE;
+    --hover: #EEF3FB;
+    --danger: #B23A3A;
+    --success: #2E7D5B;
+    --shadow: 0 1px 3px rgba(27,42,74,0.06), 0 4px 14px rgba(27,42,74,0.06);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text); background: var(--bg);
+    font-size: 14px;
+  }
+
+  /* ---------- 4-COL COMPACT HEADER (Elite Standard) ---------- */
+  .elite-header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .elite-header-inner {
+    display: grid;
+    grid-template-columns: 6px 200px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 24px;
+    max-width: 1600px; margin: 0 auto;
+  }
+  .accent-bar {
+    width: 6px; height: 56px;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--blue) 50%, var(--navy) 100%);
+    border-radius: 2px;
+  }
+  .logo-block {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-mark {
+    width: 44px; height: 44px;
+    background: var(--navy);
+    color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 20px;
+    letter-spacing: 1px;
+    border: 2px solid var(--gold);
+  }
+  .logo-text {
+    font-weight: 900; font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .logo-text .sub { font-weight: 400; color: var(--muted); font-size: 10px; letter-spacing: 1px; }
+  .title-block h1 {
+    margin: 0;
+    font-size: 22px; font-weight: 900;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .title-block .underline {
+    height: 3px; width: 100%;
+    background: var(--blue);
+    margin-top: 4px;
+  }
+  .title-block .subtitle {
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .meta-block {
+    text-align: right;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .meta-block .count {
+    font-weight: 900; color: var(--navy); font-size: 22px;
+    letter-spacing: 0.5px;
+  }
+  .meta-block .count-label {
+    text-transform: uppercase; letter-spacing: 1px; font-size: 10px;
+  }
+
+  /* ---------- TOOLBAR ---------- */
+  .toolbar {
+    max-width: 1600px; margin: 0 auto;
+    padding: 18px 24px 10px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  }
+  .search {
+    flex: 1; min-width: 240px;
+    position: relative;
+  }
+  .search input {
+    width: 100%; padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: inherit; font-size: 14px;
+    background: #fff;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .search input:focus {
+    outline: none; border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(31,95,173,0.12);
+  }
+  .search::before {
+    content: ""; position: absolute;
+    left: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236A7891' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>") no-repeat center/contain;
+  }
+  .filter-group { display: flex; gap: 8px; align-items: center; }
+  .filter-group label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); font-weight: 700;
+  }
+  select, .toolbar-input {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff; font-family: inherit; font-size: 13px;
+    color: var(--text); cursor: pointer;
+    min-width: 130px;
+  }
+  select:focus, .toolbar-input:focus {
+    outline: none; border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(31,95,173,0.12);
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    padding: 9px 16px;
+    border: 1px solid var(--blue);
+    background: var(--blue); color: #fff;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    border-radius: 4px; cursor: pointer;
+    transition: background 120ms, transform 80ms;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #1A4F94; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--navy); border-color: var(--navy);
+  }
+  .btn-primary:hover { background: #243758; }
+  .btn-ghost {
+    background: #fff; color: var(--navy); border-color: var(--border);
+  }
+  .btn-ghost:hover { background: var(--hover); border-color: var(--blue); color: var(--blue); }
+  a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+  .btn-danger {
+    background: #fff; color: var(--danger); border-color: #E5C6C6;
+  }
+  .btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-icon {
+    padding: 6px 10px; font-size: 11px;
+  }
+
+  /* ---------- TABLE ---------- */
+  .table-wrap {
+    max-width: 1600px; margin: 8px auto 24px;
+    padding: 0 24px;
+  }
+  .table-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--navy); color: #fff;
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    position: sticky; top: 0; z-index: 2;
+    white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:last-child { border-right: none; }
+  thead th .sort-ind {
+    display: inline-block; margin-left: 4px; color: var(--gold); opacity: 0.6;
+  }
+  thead th.sorted .sort-ind { opacity: 1; }
+  tbody tr {
+    border-top: 1px solid var(--border);
+    transition: background 120ms;
+  }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:hover { background: var(--hover); }
+  tbody td {
+    padding: 11px 14px;
+    vertical-align: middle;
+  }
+  tbody td.actions {
+    white-space: nowrap; text-align: right;
+    width: 1%;
+  }
+  .supplier-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    border-radius: 3px;
+    background: var(--blue); color: #fff;
+  }
+  .supplier-tag.RBS { background: var(--navy); }
+  .supplier-tag.SRS { background: var(--gold); color: var(--navy); }
+  .state-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px;
+    background: #E8EEF7; color: var(--navy);
+    border-radius: 3px;
+    min-width: 30px; text-align: center;
+  }
+  .empty-state {
+    padding: 60px 20px; text-align: center;
+    color: var(--muted);
+  }
+  .empty-state .big {
+    font-size: 18px; font-weight: 700; color: var(--navy);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .loading {
+    padding: 40px; text-align: center; color: var(--muted);
+  }
+  .loading::after {
+    content: ""; display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: -2px; margin-left: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- CALLOUT (Elite Standard) ---------- */
+  .callout {
+    max-width: 1600px; margin: 0 auto 16px;
+    padding: 0 24px;
+  }
+  .callout-inner {
+    background: #EEF3FB;
+    border-left: 4px solid var(--blue);
+    padding: 10px 16px;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px; color: var(--navy);
+    display: none;
+  }
+  .callout-inner.show { display: block; }
+  .callout-inner.error { background: #FBEEEE; border-left-color: var(--danger); color: var(--danger); }
+  .callout-inner.success { background: #EAF5EF; border-left-color: var(--success); color: var(--success); }
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(27,42,74,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    align-items: flex-start; justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: #fff;
+    width: 100%; max-width: 640px;
+    border-radius: 6px;
+    box-shadow: 0 10px 40px rgba(27,42,74,0.25);
+    overflow: hidden;
+    animation: modalIn 180ms ease-out;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(-12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-head {
+    background: var(--navy); color: #fff;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-head h2 {
+    margin: 0; font-size: 14px; font-weight: 900;
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .modal-close {
+    background: transparent; border: 0; color: #fff;
+    font-size: 22px; cursor: pointer; line-height: 1;
+    padding: 0 4px;
+  }
+  .modal-body { padding: 20px; }
+  .modal-foot {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+    background: var(--row-alt);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-field label {
+    display: block; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .form-field label .req { color: var(--danger); margin-left: 2px; }
+  .form-field input, .form-field select, .form-field textarea {
+    width: 100%; padding: 9px 11px;
+    border: 1px solid var(--border); border-radius: 4px;
+    font-family: inherit; font-size: 13px;
+    background: #fff;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline: none; border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(31,95,173,0.12);
+  }
+
+  /* ---------- CONFIRM ---------- */
+  .confirm .modal { max-width: 420px; }
+  .confirm .modal-body { padding: 24px 20px; }
+  .confirm .modal-body p { margin: 0 0 6px; line-height: 1.5; }
+  .confirm .modal-body .who { font-weight: 700; color: var(--navy); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    text-align: center; padding: 18px;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.5px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  footer .brand-strip {
+    display: inline-block; height: 2px; width: 80px;
+    background: var(--blue); vertical-align: 4px;
+    margin: 0 10px;
+  }
+
+  @media (max-width: 900px) {
+    .elite-header-inner { grid-template-columns: 6px auto 1fr; }
+    .meta-block { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    thead th, tbody td { padding: 10px 8px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== HEADER ============== -->
+<header class="elite-header">
+  <div class="elite-header-inner">
+    <div class="accent-bar"></div>
+    <div class="logo-block">
+      <div class="logo-mark">E</div>
+      <div class="logo-text">
+        ELITE<br><span class="sub">FAMILY OF BRANDS</span>
+      </div>
+    </div>
+    <div class="title-block">
+      <h1>Supplier Contacts</h1>
+      <div class="underline"></div>
+      <div class="subtitle">ABC &nbsp;·&nbsp; RBS &nbsp;·&nbsp; SRS &nbsp;—&nbsp; Branch &amp; Salesperson Directory</div>
+    </div>
+    <div class="meta-block">
+      <div class="count" id="totalCount">0</div>
+      <div class="count-label">Contacts</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============== CALLOUT (status messages) ============== -->
+<div class="callout">
+  <div class="callout-inner" id="statusCallout"></div>
+</div>
+
+<!-- ============== TOOLBAR ============== -->
+<div class="toolbar">
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Search name, branch, city, manager, phone…" autocomplete="off">
+  </div>
+  <div class="filter-group">
+    <label for="supplierFilter">Supplier</label>
+    <select id="supplierFilter">
+      <option value="">All</option>
+      <option value="ABC">ABC</option>
+      <option value="RBS">RBS</option>
+      <option value="SRS">SRS</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="brandFilter">Account</label>
+    <select id="brandFilter">
+      <option value="">All</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="stateFilter">State</label>
+    <select id="stateFilter">
+      <option value="">All</option>
+    </select>
+  </div>
+  <button class="btn btn-ghost" id="refreshBtn" title="Pull latest data from Google Sheet">↻ Refresh</button>
+  <button class="btn btn-ghost" id="exportBtn" title="Export visible rows to CSV">Export CSV</button>
+  <a class="btn btn-ghost" id="sheetBtn" target="_blank" rel="noopener" title="Open the source Google Sheet in a new tab">Open Sheet ↗</a>
+  <button class="btn btn-primary" id="addBtn">+ Add Contact</button>
+</div>
+
+<!-- ============== TABLE ============== -->
+<div class="table-wrap">
+  <div class="table-card">
+    <table id="contactsTable">
+      <thead>
+        <tr>
+          <th data-sort="supplier">Supplier <span class="sort-ind">↕</span></th>
+          <th data-sort="accountName">Account Name <span class="sort-ind">↕</span></th>
+          <th data-sort="salesperson">Salesperson <span class="sort-ind">↕</span></th>
+          <th data-sort="salespersonPhone">Phone <span class="sort-ind">↕</span></th>
+          <th data-sort="branch">Branch <span class="sort-ind">↕</span></th>
+          <th data-sort="branchCity">City <span class="sort-ind">↕</span></th>
+          <th data-sort="branchState">State <span class="sort-ind">↕</span></th>
+          <th data-sort="branchManager">Branch Manager <span class="sort-ind">↕</span></th>
+          <th data-sort="branchPhone">Branch Phone <span class="sort-ind">↕</span></th>
+          <th style="text-align:right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="10" class="loading">Loading contacts</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============== ADD/EDIT MODAL ============== -->
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Contact</h2>
+      <button class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Supplier <span class="req">*</span></label>
+          <select id="f_supplier">
+            <option value="ABC">ABC</option>
+            <option value="RBS">RBS</option>
+            <option value="SRS">SRS</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Account Name <span class="req">*</span></label>
+          <input id="f_accountName" type="text" list="accountList" placeholder="e.g. Aspen Exteriors Inc">
+          <datalist id="accountList"></datalist>
+        </div>
+        <div class="form-field">
+          <label>Salesperson</label>
+          <input id="f_salesperson" type="text">
+        </div>
+        <div class="form-field">
+          <label>Salesperson Phone</label>
+          <input id="f_salespersonPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label>Branch #</label>
+          <input id="f_branch" type="text">
+        </div>
+        <div class="form-field">
+          <label>Branch City</label>
+          <input id="f_branchCity" type="text">
+        </div>
+        <div class="form-field">
+          <label>Branch State</label>
+          <input id="f_branchState" type="text" maxlength="2" placeholder="MN" style="text-transform:uppercase;">
+        </div>
+        <div class="form-field">
+          <label>Branch Manager</label>
+          <input id="f_branchManager" type="text">
+        </div>
+        <div class="form-field full">
+          <label>Branch Phone</label>
+          <input id="f_branchPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Cancel</button>
+      <button class="btn btn-primary" id="saveBtn">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== DELETE CONFIRM ============== -->
+<div class="modal-backdrop confirm" id="confirmModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Delete Contact</h2>
+      <button class="modal-close" data-close-confirm>×</button>
+    </div>
+    <div class="modal-body">
+      <p>Permanently remove this contact?</p>
+      <p class="who" id="confirmWho"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close-confirm>Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only
+</footer>
+
+<script>
+/* ============================================================
+   CONFIG — update API_URL with your deployed Apps Script URL
+   ============================================================ */
+const CONFIG = {
+  // Apps Script Web App /exec URL — cloud sync ENABLED
+  API_URL: "https://script.google.com/macros/s/AKfycbxwj2bsXfSyTaNCEMJDtuWc5bQbwUrxxEQLQYhOkFjzWgMLUCZd6JSx5ItFW8vzRQe5bQ/exec",
+  SHEET_URL: "https://docs.google.com/spreadsheets/d/1bkBfW3bbuPKie56dcXTV8WuBesEY0qa3mV0VQQcjxNw/edit",
+  LOCAL_KEY: "elite_supplier_contacts_v1"
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let contacts = [];               // master array
+let view = [];                   // filtered/sorted view
+let sortKey = "supplier";
+let sortDir = 1;                 // 1 asc, -1 desc
+let editingId = null;
+let pendingDeleteId = null;
+
+/* ============================================================
+   SEED DATA — ABC contacts from uploaded sheet
+   (Used only if cloud is empty AND localStorage is empty,
+   so first-run shows real data instead of an empty table.)
+   ============================================================ */
+const SEED = [
+  {supplier:"ABC", accountName:"Aspen Exteriors Inc",                  salesperson:"Jake Slavin",     salespersonPhone:"(651) 224-3675", branch:"1253", branchCity:"Lakeville",   branchState:"MN", branchManager:"Coleman, Brett J",   branchPhone:"(952) 229-1933"},
+  {supplier:"ABC", accountName:"Aspen Exteriors Inc",                  salesperson:"John Quintana",   salespersonPhone:"(216) 306-6960", branch:"301",  branchCity:"New Castle",  branchState:"PA", branchManager:"Stitt, Kirk",         branchPhone:"(724) 656-1007"},
+  {supplier:"ABC", accountName:"Grove Exteriors LLC (123 Exteriors)",  salesperson:"Cole Turner",     salespersonPhone:"779-254-3056",   branch:"64",   branchCity:"Mokena",      branchState:"IL", branchManager:"Todd Wallace",        branchPhone:"708-633-1222"},
+  {supplier:"ABC", accountName:"Grove Exteriors LLC (123 Exteriors)",  salesperson:"Joey Fornaro",    salespersonPhone:"(608) 362-1800", branch:"1230", branchCity:"Cleveland",   branchState:"OH", branchManager:"Wurst, Ryan",         branchPhone:"(216) 306-6960"},
+  {supplier:"ABC", accountName:"Grove Exteriors LLC (123 Exteriors)",  salesperson:"Ray Johnson",     salespersonPhone:"(414) 471-8600", branch:"17",   branchCity:"West Allis",  branchState:"WI", branchManager:"Meyer, Garrett O",    branchPhone:"(414) 471-8600"},
+  {supplier:"ABC", accountName:"Reimagine Rfg & Const LLC",            salesperson:"Dustin Cover",    salespersonPhone:"(480) 606-5349", branch:"62",   branchCity:"Albuquerque", branchState:"NM", branchManager:"Karspeck, Allen C",   branchPhone:"(505) 345-6588"},
+  {supplier:"ABC", accountName:"Reimagine Rfg & Const LLC",            salesperson:"Dustin Cover",    salespersonPhone:"(480) 606-5349", branch:"1205", branchCity:"Mesa",        branchState:"AZ", branchManager:"Navarro, Carlos",     branchPhone:"(480) 606-5349"},
+  {supplier:"ABC", accountName:"Reimagine Rfg & Const LLC",            salesperson:"Eric Dugan",      salespersonPhone:"(610) 363-9550", branch:"424",  branchCity:"Exton",       branchState:"PA", branchManager:"Mattson, Richard L",  branchPhone:"(610) 363-9551"},
+  {supplier:"ABC", accountName:"Universal Roofing LLC",                salesperson:"Adam Shock",      salespersonPhone:"(317) 783-3488", branch:"130",  branchCity:"Indianapolis",branchState:"IN", branchManager:"Adkins, Wayne A",     branchPhone:"(317) 876-8163"},
+  {supplier:"ABC", accountName:"Wildwood Roofing & Const",             salesperson:"Jon Riney",       salespersonPhone:"(636) 272-4766", branch:"368",  branchCity:"OFallon",     branchState:"MO", branchManager:"Donaldson, Bruce L",  branchPhone:"(636) 272-4769"}
+];
+
+/* ============================================================
+   API LAYER — talks to Apps Script if API_URL set, else localStorage
+   ============================================================ */
+const api = {
+  isCloud() { return !!CONFIG.API_URL; },
+
+  async list() {
+    if (this.isCloud()) {
+      const r = await fetch(CONFIG.API_URL + "?action=list");
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Load failed");
+      return j.contacts;
+    } else {
+      const raw = localStorage.getItem(CONFIG.LOCAL_KEY);
+      if (raw) return JSON.parse(raw);
+      // first run — seed
+      const seeded = SEED.map(c => ({...c, id: uid()}));
+      localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(seeded));
+      return seeded;
+    }
+  },
+
+  async create(contact) {
+    if (this.isCloud()) {
+      const r = await fetch(CONFIG.API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"create", contact})
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Create failed");
+      return j.contact;
+    } else {
+      const c = {...contact, id: uid()};
+      contacts.push(c);
+      localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(contacts));
+      return c;
+    }
+  },
+
+  async update(contact) {
+    if (this.isCloud()) {
+      const r = await fetch(CONFIG.API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"update", contact})
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Update failed");
+      return j.contact;
+    } else {
+      const i = contacts.findIndex(c => c.id === contact.id);
+      if (i >= 0) contacts[i] = contact;
+      localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(contacts));
+      return contact;
+    }
+  },
+
+  async remove(id) {
+    if (this.isCloud()) {
+      const r = await fetch(CONFIG.API_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({action:"delete", id})
+      });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Delete failed");
+      return true;
+    } else {
+      contacts = contacts.filter(c => c.id !== id);
+      localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(contacts));
+      return true;
+    }
+  }
+};
+
+function uid() { return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7); }
+
+/* ============================================================
+   STATUS MESSAGES
+   ============================================================ */
+function flash(msg, kind) {
+  const el = document.getElementById("statusCallout");
+  el.className = "callout-inner show " + (kind || "");
+  el.textContent = msg;
+  if (kind !== "error") {
+    setTimeout(() => { el.classList.remove("show"); }, 3500);
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function applyFilters() {
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const sup = document.getElementById("supplierFilter").value;
+  const brand = document.getElementById("brandFilter").value;
+  const state = document.getElementById("stateFilter").value;
+
+  view = contacts.filter(c => {
+    if (sup && c.supplier !== sup) return false;
+    if (brand && c.accountName !== brand) return false;
+    if (state && c.branchState !== state) return false;
+    if (q) {
+      const blob = [c.accountName, c.salesperson, c.salespersonPhone, c.branch,
+                    c.branchCity, c.branchState, c.branchManager, c.branchPhone, c.supplier]
+                    .filter(Boolean).join(" ").toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+
+  view.sort((a, b) => {
+    const av = (a[sortKey] || "").toString().toLowerCase();
+    const bv = (b[sortKey] || "").toString().toLowerCase();
+    if (av < bv) return -1 * sortDir;
+    if (av > bv) return  1 * sortDir;
+    return 0;
+  });
+
+  renderTable();
+  renderHeaderSort();
+}
+
+function renderTable() {
+  const tbody = document.getElementById("tableBody");
+  document.getElementById("totalCount").textContent = view.length;
+
+  if (view.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+        <div class="big">No contacts found</div>
+        <div>Try clearing filters or click <strong>+ Add Contact</strong>.</div>
+      </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = view.map(c => `
+    <tr data-id="${escapeAttr(c.id)}">
+      <td><span class="supplier-tag ${c.supplier}">${escapeHtml(c.supplier || '')}</span></td>
+      <td>${escapeHtml(c.accountName || '')}</td>
+      <td>${escapeHtml(c.salesperson || '')}</td>
+      <td>${formatPhone(c.salespersonPhone)}</td>
+      <td>${escapeHtml(c.branch || '')}</td>
+      <td>${escapeHtml(c.branchCity || '')}</td>
+      <td>${c.branchState ? `<span class="state-tag">${escapeHtml(c.branchState)}</span>` : ''}</td>
+      <td>${escapeHtml(c.branchManager || '')}</td>
+      <td>${formatPhone(c.branchPhone)}</td>
+      <td class="actions">
+        <button class="btn btn-ghost btn-icon" data-edit="${escapeAttr(c.id)}">Edit</button>
+        <button class="btn btn-danger btn-icon" data-del="${escapeAttr(c.id)}">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderHeaderSort() {
+  document.querySelectorAll("thead th").forEach(th => {
+    th.classList.remove("sorted");
+    const ind = th.querySelector(".sort-ind");
+    if (!ind) return;
+    if (th.dataset.sort === sortKey) {
+      th.classList.add("sorted");
+      ind.textContent = sortDir === 1 ? "▲" : "▼";
+    } else {
+      ind.textContent = "↕";
+    }
+  });
+}
+
+function refreshFilterOptions() {
+  const brandSel = document.getElementById("brandFilter");
+  const stateSel = document.getElementById("stateFilter");
+  const accountList = document.getElementById("accountList");
+
+  const brands = [...new Set(contacts.map(c => c.accountName).filter(Boolean))].sort();
+  const states = [...new Set(contacts.map(c => c.branchState).filter(Boolean))].sort();
+
+  const prevBrand = brandSel.value;
+  const prevState = stateSel.value;
+
+  brandSel.innerHTML = `<option value="">All</option>` +
+    brands.map(b => `<option value="${escapeAttr(b)}">${escapeHtml(b)}</option>`).join("");
+  stateSel.innerHTML = `<option value="">All</option>` +
+    states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+
+  if (brands.includes(prevBrand)) brandSel.value = prevBrand;
+  if (states.includes(prevState)) stateSel.value = prevState;
+
+  accountList.innerHTML = brands.map(b => `<option value="${escapeAttr(b)}">`).join("");
+}
+
+/* ============================================================
+   FORMATTING / ESCAPE HELPERS
+   ============================================================ */
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
+function formatPhone(p) {
+  if (!p) return "";
+  const digits = String(p).replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `<a href="tel:${digits}" style="color:var(--blue);text-decoration:none;">(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}</a>`;
+  }
+  return escapeHtml(p);
+}
+
+/* ============================================================
+   MODAL CONTROL
+   ============================================================ */
+function openEdit(contact) {
+  editingId = contact ? contact.id : null;
+  document.getElementById("modalTitle").textContent = contact ? "Edit Contact" : "Add Contact";
+  const f = contact || {supplier:"ABC"};
+  document.getElementById("f_supplier").value         = f.supplier || "ABC";
+  document.getElementById("f_accountName").value      = f.accountName || "";
+  document.getElementById("f_salesperson").value      = f.salesperson || "";
+  document.getElementById("f_salespersonPhone").value = f.salespersonPhone || "";
+  document.getElementById("f_branch").value           = f.branch || "";
+  document.getElementById("f_branchCity").value       = f.branchCity || "";
+  document.getElementById("f_branchState").value      = f.branchState || "";
+  document.getElementById("f_branchManager").value    = f.branchManager || "";
+  document.getElementById("f_branchPhone").value      = f.branchPhone || "";
+  document.getElementById("editModal").classList.add("show");
+  setTimeout(() => document.getElementById("f_accountName").focus(), 60);
+}
+
+function closeEdit() {
+  document.getElementById("editModal").classList.remove("show");
+  editingId = null;
+}
+
+async function saveContact() {
+  const account = document.getElementById("f_accountName").value.trim();
+  if (!account) { flash("Account Name is required.", "error"); return; }
+
+  const data = {
+    supplier:         document.getElementById("f_supplier").value,
+    accountName:      account,
+    salesperson:      document.getElementById("f_salesperson").value.trim(),
+    salespersonPhone: document.getElementById("f_salespersonPhone").value.trim(),
+    branch:           document.getElementById("f_branch").value.trim(),
+    branchCity:       document.getElementById("f_branchCity").value.trim(),
+    branchState:      document.getElementById("f_branchState").value.trim().toUpperCase(),
+    branchManager:    document.getElementById("f_branchManager").value.trim(),
+    branchPhone:      document.getElementById("f_branchPhone").value.trim()
+  };
+
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true; btn.textContent = "Saving…";
+
+  try {
+    if (editingId) {
+      data.id = editingId;
+      const updated = await api.update(data);
+      const i = contacts.findIndex(c => c.id === editingId);
+      if (i >= 0) contacts[i] = updated;
+      flash("Contact updated.", "success");
+    } else {
+      const created = await api.create(data);
+      contacts.push(created);
+      flash("Contact added.", "success");
+    }
+    closeEdit();
+    refreshFilterOptions();
+    applyFilters();
+  } catch (e) {
+    flash("Save failed: " + e.message, "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "Save Contact";
+  }
+}
+
+function openConfirm(contact) {
+  pendingDeleteId = contact.id;
+  document.getElementById("confirmWho").textContent =
+    `${contact.accountName || "(unnamed)"} — ${contact.salesperson || ""} (${contact.branchCity || ""}, ${contact.branchState || ""})`;
+  document.getElementById("confirmModal").classList.add("show");
+}
+function closeConfirm() {
+  document.getElementById("confirmModal").classList.remove("show");
+  pendingDeleteId = null;
+}
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const btn = document.getElementById("confirmDeleteBtn");
+  btn.disabled = true; btn.textContent = "Deleting…";
+  try {
+    await api.remove(pendingDeleteId);
+    contacts = contacts.filter(c => c.id !== pendingDeleteId);
+    flash("Contact deleted.", "success");
+    closeConfirm();
+    refreshFilterOptions();
+    applyFilters();
+  } catch (e) {
+    flash("Delete failed: " + e.message, "error");
+  } finally {
+    btn.disabled = false; btn.textContent = "Delete";
+  }
+}
+
+/* ============================================================
+   CSV EXPORT (visible rows)
+   ============================================================ */
+function exportCSV() {
+  const cols = [
+    ["Supplier", "supplier"], ["Account Name", "accountName"],
+    ["Salesperson", "salesperson"], ["Salesperson Phone", "salespersonPhone"],
+    ["Branch", "branch"], ["Branch City", "branchCity"],
+    ["Branch State", "branchState"], ["Branch Manager", "branchManager"],
+    ["Branch Phone", "branchPhone"]
+  ];
+  const esc = v => {
+    const s = String(v ?? "");
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+  };
+  const lines = [cols.map(c => c[0]).join(",")];
+  view.forEach(r => lines.push(cols.map(c => esc(r[c[1]])).join(",")));
+  const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `Elite_Supplier_Contacts_${stamp}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   REFRESH FROM SHEET
+   ============================================================ */
+async function refreshFromSheet(silent) {
+  const btn = document.getElementById("refreshBtn");
+  const original = "↻ Refresh";
+  if (!silent) {
+    btn.disabled = true;
+    btn.textContent = "Refreshing…";
+  }
+  try {
+    const fresh = await api.list();
+    const changed = JSON.stringify(fresh) !== JSON.stringify(contacts);
+    contacts = fresh;
+    refreshFilterOptions();
+    applyFilters();
+    // Cache for instant load next time
+    try { localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(contacts)); } catch(e) {}
+    if (!silent) {
+      flash("Synced from Google Sheet — " + contacts.length + " contacts loaded.", "success");
+    } else if (changed) {
+      flash("Synced — sheet changes loaded.", "success");
+    }
+  } catch (e) {
+    if (!silent) flash("Refresh failed: " + e.message, "error");
+  } finally {
+    if (!silent) {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+}
+
+/* ============================================================
+   AUTO-REFRESH ON TAB FOCUS
+   Throttled so flipping tabs rapidly doesn't hammer the API.
+   ============================================================ */
+let lastSync = Date.now();
+const FOCUS_THROTTLE_MS = 5000; // don't re-pull more than once every 5s
+
+function maybeAutoRefresh() {
+  if (document.hidden) return;
+  if (Date.now() - lastSync < FOCUS_THROTTLE_MS) return;
+  lastSync = Date.now();
+  refreshFromSheet(true); // silent
+}
+
+document.addEventListener("visibilitychange", maybeAutoRefresh);
+window.addEventListener("focus", maybeAutoRefresh);
+
+/* ============================================================
+   EVENT WIRING
+   ============================================================ */
+document.getElementById("searchInput").addEventListener("input", applyFilters);
+document.getElementById("supplierFilter").addEventListener("change", applyFilters);
+document.getElementById("brandFilter").addEventListener("change", applyFilters);
+document.getElementById("stateFilter").addEventListener("change", applyFilters);
+document.getElementById("addBtn").addEventListener("click", () => openEdit(null));
+document.getElementById("saveBtn").addEventListener("click", saveContact);
+document.getElementById("exportBtn").addEventListener("click", exportCSV);
+document.getElementById("refreshBtn").addEventListener("click", refreshFromSheet);
+document.getElementById("sheetBtn").href = CONFIG.SHEET_URL;
+document.getElementById("confirmDeleteBtn").addEventListener("click", confirmDelete);
+
+document.querySelectorAll("[data-close]").forEach(el => el.addEventListener("click", closeEdit));
+document.querySelectorAll("[data-close-confirm]").forEach(el => el.addEventListener("click", closeConfirm));
+
+document.querySelectorAll("thead th[data-sort]").forEach(th => {
+  th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = 1; }
+    applyFilters();
+  });
+});
+
+document.getElementById("tableBody").addEventListener("click", (e) => {
+  const editId = e.target.dataset.edit;
+  const delId = e.target.dataset.del;
+  if (editId) {
+    const c = contacts.find(c => c.id === editId);
+    if (c) openEdit(c);
+  } else if (delId) {
+    const c = contacts.find(c => c.id === delId);
+    if (c) openConfirm(c);
+  }
+});
+
+// Close modal on backdrop click / Escape
+[document.getElementById("editModal"), document.getElementById("confirmModal")].forEach(m => {
+  m.addEventListener("click", (e) => {
+    if (e.target === m) {
+      if (m.id === "editModal") closeEdit(); else closeConfirm();
+    }
+  });
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { closeEdit(); closeConfirm(); }
+});
+
+/* ============================================================
+   INITIAL LOAD
+   ============================================================ */
+(async function init() {
+  // Instant load from cache if we have one
+  let usedCache = false;
+  try {
+    const cached = localStorage.getItem(CONFIG.LOCAL_KEY);
+    if (cached) {
+      contacts = JSON.parse(cached);
+      refreshFilterOptions();
+      applyFilters();
+      usedCache = true;
+    }
+  } catch(e) {}
+
+  // Then fetch fresh from sheet (silent if we already showed cached data)
+  try {
+    const fresh = await api.list();
+    const changed = JSON.stringify(fresh) !== JSON.stringify(contacts);
+    contacts = fresh;
+    try { localStorage.setItem(CONFIG.LOCAL_KEY, JSON.stringify(contacts)); } catch(e) {}
+    if (changed) {
+      refreshFilterOptions();
+      applyFilters();
+    } else if (!usedCache) {
+      refreshFilterOptions();
+      applyFilters();
+    }
+    lastSync = Date.now();
+  } catch (e) {
+    if (!usedCache) {
+      flash("Could not load contacts: " + e.message, "error");
+      contacts = [];
+      refreshFilterOptions();
+      applyFilters();
+    }
+  }
+})();
+</script>
+</body>
+</html>
