@@ -415,18 +415,22 @@ footer .brand-strip {
         <tr>
           <th data-sort="supplier">Supplier <span class="sort-ind">↕</span></th>
           <th data-sort="accountName">Account Name <span class="sort-ind">↕</span></th>
-          <th data-sort="salesperson">Salesperson <span class="sort-ind">↕</span></th>
-          <th data-sort="salespersonPhone">Phone <span class="sort-ind">↕</span></th>
-          <th data-sort="branch">Branch <span class="sort-ind">↕</span></th>
+          <th data-sort="branch">Branch # <span class="sort-ind">↕</span></th>
+          <th data-sort="branchAddress">Branch Address <span class="sort-ind">↕</span></th>
           <th data-sort="branchCity">City <span class="sort-ind">↕</span></th>
           <th data-sort="branchState">State <span class="sort-ind">↕</span></th>
+          <th data-sort="branchPhone">Branch Phone # <span class="sort-ind">↕</span></th>
           <th data-sort="branchManager">Branch Manager <span class="sort-ind">↕</span></th>
-          <th data-sort="branchPhone">Branch Phone <span class="sort-ind">↕</span></th>
+          <th data-sort="managerPhone">Manager Phone # <span class="sort-ind">↕</span></th>
+          <th data-sort="salesperson">Branch Rep <span class="sort-ind">↕</span></th>
+          <th data-sort="salespersonPhone">Rep Phone # <span class="sort-ind">↕</span></th>
+          <th data-sort="rsm">RSM <span class="sort-ind">↕</span></th>
+          <th data-sort="rsmPhone">RSM Phone # <span class="sort-ind">↕</span></th>
           <th style="text-align:right;">Actions</th>
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="10" class="loading">Loading contacts</td></tr>
+        <tr><td colspan="14" class="loading">Loading contacts</td></tr>
       </tbody>
     </table>
   </div>
@@ -453,16 +457,12 @@ footer .brand-strip {
           <datalist id="accountList"></datalist>
         </div>
         <div class="form-field">
-          <label>Salesperson</label>
-          <input id="f_salesperson" type="text">
-        </div>
-        <div class="form-field">
-          <label>Salesperson Phone</label>
-          <input id="f_salespersonPhone" type="text" placeholder="(xxx) xxx-xxxx">
-        </div>
-        <div class="form-field">
           <label>Branch #</label>
           <input id="f_branch" type="text">
+        </div>
+        <div class="form-field">
+          <label>Branch Address</label>
+          <input id="f_branchAddress" type="text" placeholder="123 Main St">
         </div>
         <div class="form-field">
           <label>Branch City</label>
@@ -473,12 +473,32 @@ footer .brand-strip {
           <input id="f_branchState" type="text" maxlength="2" placeholder="MN" style="text-transform:uppercase;">
         </div>
         <div class="form-field">
+          <label>Branch Phone #</label>
+          <input id="f_branchPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+        <div class="form-field">
           <label>Branch Manager</label>
           <input id="f_branchManager" type="text">
         </div>
-        <div class="form-field full">
-          <label>Branch Phone</label>
-          <input id="f_branchPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        <div class="form-field">
+          <label>Manager Phone #</label>
+          <input id="f_managerPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label>Branch Rep</label>
+          <input id="f_salesperson" type="text">
+        </div>
+        <div class="form-field">
+          <label>Rep Phone #</label>
+          <input id="f_salespersonPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label>RSM</label>
+          <input id="f_rsm" type="text">
+        </div>
+        <div class="form-field">
+          <label>RSM Phone #</label>
+          <input id="f_rsmPhone" type="text" placeholder="(xxx) xxx-xxxx">
         </div>
       </div>
     </div>
@@ -744,7 +764,8 @@ function applyFilters() {
     if (state && c.branchState !== state) return false;
     if (q) {
       const blob = [c.accountName, c.salesperson, c.salespersonPhone, c.branch,
-                    c.branchCity, c.branchState, c.branchManager, c.branchPhone, c.supplier]
+                    c.branchAddress, c.branchCity, c.branchState, c.branchManager,
+                    c.branchPhone, c.managerPhone, c.rsm, c.rsmPhone, c.supplier]
                    .filter(Boolean).join(" ").toLowerCase();
       if (!blob.includes(q)) return false;
     }
@@ -768,7 +789,7 @@ function renderTable() {
   document.getElementById("totalCount").textContent = view.length;
 
   if (view.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="14"><div class="empty-state">
       <div class="big">No contacts found</div>
       <div>Try clearing filters or click <strong>+ Add Contact</strong>.</div>
     </div></td></tr>`;
@@ -779,13 +800,17 @@ function renderTable() {
     <tr data-id="${escapeAttr(c.id)}">
       <td><span class="supplier-tag ${escapeAttr(c.supplier || '')}" ${supplierTagStyle(c.supplier)}>${escapeHtml(c.supplier || '')}</span></td>
       <td>${escapeHtml(c.accountName || '')}</td>
-      <td>${escapeHtml(c.salesperson || '')}</td>
-      <td>${formatPhone(c.salespersonPhone)}</td>
       <td>${escapeHtml(c.branch || '')}</td>
+      <td>${escapeHtml(c.branchAddress || '')}</td>
       <td>${escapeHtml(c.branchCity || '')}</td>
       <td>${c.branchState ? `<span class="state-tag">${escapeHtml(c.branchState)}</span>` : ''}</td>
-      <td>${escapeHtml(c.branchManager || '')}</td>
       <td>${formatPhone(c.branchPhone)}</td>
+      <td>${escapeHtml(c.branchManager || '')}</td>
+      <td>${formatPhone(c.managerPhone)}</td>
+      <td>${escapeHtml(c.salesperson || '')}</td>
+      <td>${formatPhone(c.salespersonPhone)}</td>
+      <td>${escapeHtml(c.rsm || '')}</td>
+      <td>${formatPhone(c.rsmPhone)}</td>
       <td class="actions">
         <button class="btn btn-ghost btn-icon" data-edit="${escapeAttr(c.id)}">Edit</button>
         <button class="btn btn-danger btn-icon" data-del="${escapeAttr(c.id)}">Delete</button>
@@ -885,13 +910,17 @@ function openEdit(contact) {
   const f = contact || {supplier: (suppliers[0] && suppliers[0].code) || "ABC"};
   document.getElementById("f_supplier").value = f.supplier || (suppliers[0] && suppliers[0].code) || "ABC";
   document.getElementById("f_accountName").value = f.accountName || "";
-  document.getElementById("f_salesperson").value = f.salesperson || "";
-  document.getElementById("f_salespersonPhone").value = f.salespersonPhone || "";
   document.getElementById("f_branch").value = f.branch || "";
+  document.getElementById("f_branchAddress").value = f.branchAddress || "";
   document.getElementById("f_branchCity").value = f.branchCity || "";
   document.getElementById("f_branchState").value = f.branchState || "";
-  document.getElementById("f_branchManager").value = f.branchManager || "";
   document.getElementById("f_branchPhone").value = f.branchPhone || "";
+  document.getElementById("f_branchManager").value = f.branchManager || "";
+  document.getElementById("f_managerPhone").value = f.managerPhone || "";
+  document.getElementById("f_salesperson").value = f.salesperson || "";
+  document.getElementById("f_salespersonPhone").value = f.salespersonPhone || "";
+  document.getElementById("f_rsm").value = f.rsm || "";
+  document.getElementById("f_rsmPhone").value = f.rsmPhone || "";
   document.getElementById("editModal").classList.add("show");
   setTimeout(() => document.getElementById("f_accountName").focus(), 60);
 }
@@ -914,13 +943,17 @@ async function saveContact() {
   const data = {
     supplier: supplierVal,
     accountName: account,
-    salesperson: document.getElementById("f_salesperson").value.trim(),
-    salespersonPhone: document.getElementById("f_salespersonPhone").value.trim(),
     branch: document.getElementById("f_branch").value.trim(),
+    branchAddress: document.getElementById("f_branchAddress").value.trim(),
     branchCity: document.getElementById("f_branchCity").value.trim(),
     branchState: document.getElementById("f_branchState").value.trim().toUpperCase(),
+    branchPhone: document.getElementById("f_branchPhone").value.trim(),
     branchManager: document.getElementById("f_branchManager").value.trim(),
-    branchPhone: document.getElementById("f_branchPhone").value.trim()
+    managerPhone: document.getElementById("f_managerPhone").value.trim(),
+    salesperson: document.getElementById("f_salesperson").value.trim(),
+    salespersonPhone: document.getElementById("f_salespersonPhone").value.trim(),
+    rsm: document.getElementById("f_rsm").value.trim(),
+    rsmPhone: document.getElementById("f_rsmPhone").value.trim()
   };
 
   const btn = document.getElementById("saveBtn");
@@ -1032,10 +1065,12 @@ async function saveSupplier() {
 function exportCSV() {
   const cols = [
     ["Supplier", "supplier"], ["Account Name", "accountName"],
-    ["Salesperson", "salesperson"], ["Salesperson Phone", "salespersonPhone"],
-    ["Branch", "branch"], ["Branch City", "branchCity"],
-    ["Branch State", "branchState"], ["Branch Manager", "branchManager"],
-    ["Branch Phone", "branchPhone"]
+    ["Branch #", "branch"], ["Branch Address", "branchAddress"],
+    ["Branch City", "branchCity"], ["Branch State", "branchState"],
+    ["Branch Phone #", "branchPhone"], ["Branch Manager", "branchManager"],
+    ["Manager Phone #", "managerPhone"], ["Branch Rep", "salesperson"],
+    ["Rep Phone #", "salespersonPhone"], ["RSM", "rsm"],
+    ["RSM Phone #", "rsmPhone"]
   ];
   const esc = v => {
     const s = String(v ?? "");
