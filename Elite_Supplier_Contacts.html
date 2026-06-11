@@ -326,6 +326,17 @@ tbody td.actions { white-space: nowrap; text-align: right; width: 1%; }
   line-height: 1.5;
 }
 
+.priority-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  border-radius: 3px;
+}
+.priority-tag.primary   { background: #E6F1FB; color: var(--blue); }
+.priority-tag.secondary { background: #EAF5EF; color: #2E7D5B; }
+.priority-tag.tertiary  { background: #F5F0E6; color: #854F0B; }
+
 /* ---------- DETAIL PANEL ---------- */
 .detail-overlay {
   display: none;
@@ -468,7 +479,10 @@ footer .brand-strip {
       <thead>
         <tr>
           <th data-sort="supplier">Supplier <span class="sort-ind">↕</span></th>
+          <th data-sort="priority">Priority <span class="sort-ind">↕</span></th>
+          <th data-sort="type">Type <span class="sort-ind">↕</span></th>
           <th data-sort="accountName">Account Name <span class="sort-ind">↕</span></th>
+          <th data-sort="region">Region <span class="sort-ind">↕</span></th>
           <th data-sort="branch">Branch # <span class="sort-ind">↕</span></th>
           <th data-sort="branchCity">City <span class="sort-ind">↕</span></th>
           <th data-sort="branchState">State <span class="sort-ind">↕</span></th>
@@ -477,7 +491,7 @@ footer .brand-strip {
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="7" class="loading">Loading contacts</td></tr>
+        <tr><td colspan="10" class="loading">Loading contacts</td></tr>
       </tbody>
     </table>
   </div>
@@ -502,6 +516,27 @@ footer .brand-strip {
           <label>Account Name <span class="req">*</span></label>
           <input id="f_accountName" type="text" list="accountList" placeholder="e.g. Aspen Exteriors Inc">
           <datalist id="accountList"></datalist>
+        </div>
+        <div class="form-field">
+          <label>Customer Number</label>
+          <input id="f_customerNumber" type="text">
+        </div>
+        <div class="form-field">
+          <label>Account Number</label>
+          <input id="f_accountNumber" type="text">
+        </div>
+        <div class="form-field">
+          <label>Priority</label>
+          <select id="f_priority">
+            <option value="">— Select —</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary">Secondary</option>
+            <option value="Tertiary">Tertiary</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Type</label>
+          <input id="f_type" type="text" placeholder="e.g. Roofing, Siding">
         </div>
         <div class="form-field">
           <label>Region</label>
@@ -642,7 +677,7 @@ footer .brand-strip {
 </div>
 
 <footer>
-  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.3
+  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.4
 </footer>
 
 <script>
@@ -850,7 +885,8 @@ function applyFilters() {
       const blob = [c.accountName, c.salesperson, c.salespersonPhone, c.branch,
                     c.branchAddress, c.branchCity, c.branchState, c.branchManager,
                     c.branchPhone, c.managerPhone, c.rsm, c.rsmPhone, c.supplier,
-                    c.region, c.ordersEmail, c.mgrEmail, c.repEmail, c.rsmEmail]
+                    c.region, c.ordersEmail, c.mgrEmail, c.repEmail, c.rsmEmail,
+                    c.customerNumber, c.accountNumber, c.priority, c.type]
                    .filter(Boolean).join(" ").toLowerCase();
       if (!blob.includes(q)) return false;
     }
@@ -874,7 +910,7 @@ function renderTable() {
   document.getElementById("totalCount").textContent = view.length;
 
   if (view.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
       <div class="big">No contacts found</div>
       <div>Try clearing filters or click <strong>+ Add Contact</strong>.</div>
     </div></td></tr>`;
@@ -884,7 +920,10 @@ function renderTable() {
   tbody.innerHTML = view.map(c => `
     <tr class="clickable" data-id="${escapeAttr(c.id)}">
       <td><span class="supplier-tag ${escapeAttr(c.supplier || '')}" ${supplierTagStyle(c.supplier)}>${escapeHtml(c.supplier || '')}</span></td>
+      <td>${c.priority ? `<span class="priority-tag ${escapeAttr(c.priority.toLowerCase())}">${escapeHtml(c.priority)}</span>` : ''}</td>
+      <td>${escapeHtml(c.type || '')}</td>
       <td>${escapeHtml(c.accountName || '')}</td>
+      <td>${escapeHtml(c.region || '')}</td>
       <td>${escapeHtml(c.branch || '')}</td>
       <td>${escapeHtml(c.branchCity || '')}</td>
       <td>${c.branchState ? `<span class="state-tag">${escapeHtml(c.branchState)}</span>` : ''}</td>
@@ -988,6 +1027,10 @@ function openEdit(contact) {
   const f = contact || {supplier: (suppliers[0] && suppliers[0].code) || "ABC"};
   document.getElementById("f_supplier").value = f.supplier || (suppliers[0] && suppliers[0].code) || "ABC";
   document.getElementById("f_accountName").value = f.accountName || "";
+  document.getElementById("f_customerNumber").value = f.customerNumber || "";
+  document.getElementById("f_accountNumber").value = f.accountNumber || "";
+  document.getElementById("f_priority").value = f.priority || "";
+  document.getElementById("f_type").value = f.type || "";
   document.getElementById("f_region").value = f.region || "";
   document.getElementById("f_branch").value = f.branch || "";
   document.getElementById("f_branchAddress").value = f.branchAddress || "";
@@ -1026,6 +1069,10 @@ async function saveContact() {
   const data = {
     supplier: supplierVal,
     accountName: account,
+    customerNumber: document.getElementById("f_customerNumber").value.trim(),
+    accountNumber: document.getElementById("f_accountNumber").value.trim(),
+    priority: document.getElementById("f_priority").value,
+    type: document.getElementById("f_type").value.trim(),
     region: document.getElementById("f_region").value.trim(),
     branch: document.getElementById("f_branch").value.trim(),
     branchAddress: document.getElementById("f_branchAddress").value.trim(),
@@ -1152,15 +1199,16 @@ async function saveSupplier() {
    ============================================================ */
 function exportCSV() {
   const cols = [
-    ["Supplier", "supplier"], ["Account Name", "accountName"],
-    ["Region", "region"], ["Branch #", "branch"],
-    ["Branch Address", "branchAddress"], ["Branch City", "branchCity"],
-    ["Branch State", "branchState"], ["Branch Phone #", "branchPhone"],
-    ["Orders Email", "ordersEmail"], ["Branch Manager", "branchManager"],
-    ["Mgr Email", "mgrEmail"], ["Manager Phone #", "managerPhone"],
-    ["Branch Rep", "salesperson"], ["Rep Email", "repEmail"],
-    ["Rep Phone #", "salespersonPhone"], ["RSM", "rsm"],
-    ["RSM Phone #", "rsmPhone"], ["RSM Email", "rsmEmail"]
+    ["Supplier", "supplier"], ["Priority", "priority"], ["Type", "type"],
+    ["Account Name", "accountName"], ["Customer Number", "customerNumber"],
+    ["Account Number", "accountNumber"], ["Region", "region"],
+    ["Branch #", "branch"], ["Branch Address", "branchAddress"],
+    ["Branch City", "branchCity"], ["Branch State", "branchState"],
+    ["Branch Phone #", "branchPhone"], ["Orders Email", "ordersEmail"],
+    ["Branch Manager", "branchManager"], ["Mgr Email", "mgrEmail"],
+    ["Manager Phone #", "managerPhone"], ["Branch Rep", "salesperson"],
+    ["Rep Email", "repEmail"], ["Rep Phone #", "salespersonPhone"],
+    ["RSM", "rsm"], ["RSM Phone #", "rsmPhone"], ["RSM Email", "rsmEmail"]
   ];
   const esc = v => {
     const s = String(v ?? "");
@@ -1308,10 +1356,14 @@ function openDetail(c) {
     return escapeHtml(v);
   };
   const fv = v => escapeHtml(v || "") || "—";
-
   const fe = v => v ? `<a href="mailto:${escapeHtml(v)}">${escapeHtml(v)}</a>` : "—";
 
   document.getElementById("dp-body").innerHTML = `
+    <div class="dp-section-label">Account</div>
+    <div class="dp-row"><span class="dp-label">Customer #</span><span class="dp-val">${fv(c.customerNumber)}</span></div>
+    <div class="dp-row"><span class="dp-label">Account #</span><span class="dp-val">${fv(c.accountNumber)}</span></div>
+    <div class="dp-row"><span class="dp-label">Priority</span><span class="dp-val">${c.priority ? `<span class="priority-tag ${escapeHtml(c.priority.toLowerCase())}">${escapeHtml(c.priority)}</span>` : '—'}</span></div>
+    <div class="dp-row"><span class="dp-label">Type</span><span class="dp-val">${fv(c.type)}</span></div>
     <div class="dp-section-label">Branch</div>
     <div class="dp-row"><span class="dp-label">Region</span><span class="dp-val">${fv(c.region)}</span></div>
     <div class="dp-row"><span class="dp-label">Branch #</span><span class="dp-val">${fv(c.branch)}</span></div>
