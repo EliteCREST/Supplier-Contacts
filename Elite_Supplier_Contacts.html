@@ -326,6 +326,60 @@ tbody td.actions { white-space: nowrap; text-align: right; width: 1%; }
   line-height: 1.5;
 }
 
+/* ---------- DETAIL PANEL ---------- */
+.detail-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(27,42,74,0.35);
+  z-index: 40;
+}
+.detail-overlay.show { display: block; }
+.detail-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 420px; max-width: 100vw;
+  background: #fff;
+  box-shadow: -4px 0 24px rgba(27,42,74,0.18);
+  z-index: 41;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 220ms cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.detail-panel.show { transform: translateX(0); }
+.detail-panel-head {
+  background: var(--navy); color: #fff;
+  padding: 16px 20px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-shrink: 0;
+}
+.detail-panel-head .dp-title { font-size: 15px; font-weight: 900; letter-spacing: 0.5px; line-height: 1.3; }
+.detail-panel-head .dp-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 3px; letter-spacing: 0.5px; }
+.detail-panel-close {
+  background: transparent; border: 0; color: #fff;
+  font-size: 22px; cursor: pointer; line-height: 1; padding: 0 4px; flex-shrink: 0;
+}
+.detail-panel-body { flex: 1; overflow-y: auto; padding: 20px; }
+.dp-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--blue); margin: 20px 0 8px; padding-bottom: 5px;
+  border-bottom: 2px solid var(--blue);
+}
+.dp-section-label:first-child { margin-top: 0; }
+.dp-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.dp-row:last-child { border-bottom: none; }
+.dp-label { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; min-width: 120px; flex-shrink: 0; }
+.dp-val { color: var(--text); flex: 1; }
+.dp-val a { color: var(--blue); text-decoration: none; }
+.detail-panel-foot {
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  display: flex; gap: 8px; justify-content: flex-end;
+  background: var(--row-alt); flex-shrink: 0;
+}
+tbody tr.clickable { cursor: pointer; }
+
 /* ---------- FOOTER ---------- */
 footer {
   text-align: center; padding: 18px;
@@ -416,21 +470,14 @@ footer .brand-strip {
           <th data-sort="supplier">Supplier <span class="sort-ind">↕</span></th>
           <th data-sort="accountName">Account Name <span class="sort-ind">↕</span></th>
           <th data-sort="branch">Branch # <span class="sort-ind">↕</span></th>
-          <th data-sort="branchAddress">Branch Address <span class="sort-ind">↕</span></th>
           <th data-sort="branchCity">City <span class="sort-ind">↕</span></th>
           <th data-sort="branchState">State <span class="sort-ind">↕</span></th>
-          <th data-sort="branchPhone">Branch Phone # <span class="sort-ind">↕</span></th>
-          <th data-sort="branchManager">Branch Manager <span class="sort-ind">↕</span></th>
-          <th data-sort="managerPhone">Manager Phone # <span class="sort-ind">↕</span></th>
           <th data-sort="salesperson">Branch Rep <span class="sort-ind">↕</span></th>
-          <th data-sort="salespersonPhone">Rep Phone # <span class="sort-ind">↕</span></th>
-          <th data-sort="rsm">RSM <span class="sort-ind">↕</span></th>
-          <th data-sort="rsmPhone">RSM Phone # <span class="sort-ind">↕</span></th>
           <th style="text-align:right;">Actions</th>
         </tr>
       </thead>
       <tbody id="tableBody">
-        <tr><td colspan="14" class="loading">Loading contacts</td></tr>
+        <tr><td colspan="7" class="loading">Loading contacts</td></tr>
       </tbody>
     </table>
   </div>
@@ -457,10 +504,14 @@ footer .brand-strip {
           <datalist id="accountList"></datalist>
         </div>
         <div class="form-field">
+          <label>Region</label>
+          <input id="f_region" type="text" placeholder="e.g. Midwest">
+        </div>
+        <div class="form-field">
           <label>Branch #</label>
           <input id="f_branch" type="text">
         </div>
-        <div class="form-field">
+        <div class="form-field full">
           <label>Branch Address</label>
           <input id="f_branchAddress" type="text" placeholder="123 Main St">
         </div>
@@ -477,8 +528,16 @@ footer .brand-strip {
           <input id="f_branchPhone" type="text" placeholder="(xxx) xxx-xxxx">
         </div>
         <div class="form-field">
+          <label>Orders Email</label>
+          <input id="f_ordersEmail" type="email" placeholder="orders@supplier.com">
+        </div>
+        <div class="form-field">
           <label>Branch Manager</label>
           <input id="f_branchManager" type="text">
+        </div>
+        <div class="form-field">
+          <label>Mgr Email</label>
+          <input id="f_mgrEmail" type="email" placeholder="manager@supplier.com">
         </div>
         <div class="form-field">
           <label>Manager Phone #</label>
@@ -487,6 +546,10 @@ footer .brand-strip {
         <div class="form-field">
           <label>Branch Rep</label>
           <input id="f_salesperson" type="text">
+        </div>
+        <div class="form-field">
+          <label>Rep Email</label>
+          <input id="f_repEmail" type="email" placeholder="rep@supplier.com">
         </div>
         <div class="form-field">
           <label>Rep Phone #</label>
@@ -499,6 +562,10 @@ footer .brand-strip {
         <div class="form-field">
           <label>RSM Phone #</label>
           <input id="f_rsmPhone" type="text" placeholder="(xxx) xxx-xxxx">
+        </div>
+        <div class="form-field">
+          <label>RSM Email</label>
+          <input id="f_rsmEmail" type="email" placeholder="rsm@supplier.com">
         </div>
       </div>
     </div>
@@ -554,6 +621,23 @@ footer .brand-strip {
       <button class="btn btn-ghost" data-close-confirm>Cancel</button>
       <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
     </div>
+  </div>
+</div>
+
+<!-- ============== DETAIL PANEL ============== -->
+<div class="detail-overlay" id="detailOverlay"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-panel-head">
+    <div>
+      <div class="dp-title" id="dp-title"></div>
+      <div class="dp-sub" id="dp-sub"></div>
+    </div>
+    <button class="detail-panel-close" id="detailClose">×</button>
+  </div>
+  <div class="detail-panel-body" id="dp-body"></div>
+  <div class="detail-panel-foot">
+    <button class="btn btn-ghost btn-icon" id="dp-edit-btn">Edit</button>
+    <button class="btn btn-danger btn-icon" id="dp-del-btn">Delete</button>
   </div>
 </div>
 
@@ -765,7 +849,8 @@ function applyFilters() {
     if (q) {
       const blob = [c.accountName, c.salesperson, c.salespersonPhone, c.branch,
                     c.branchAddress, c.branchCity, c.branchState, c.branchManager,
-                    c.branchPhone, c.managerPhone, c.rsm, c.rsmPhone, c.supplier]
+                    c.branchPhone, c.managerPhone, c.rsm, c.rsmPhone, c.supplier,
+                    c.region, c.ordersEmail, c.mgrEmail, c.repEmail, c.rsmEmail]
                    .filter(Boolean).join(" ").toLowerCase();
       if (!blob.includes(q)) return false;
     }
@@ -789,7 +874,7 @@ function renderTable() {
   document.getElementById("totalCount").textContent = view.length;
 
   if (view.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="14"><div class="empty-state">
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
       <div class="big">No contacts found</div>
       <div>Try clearing filters or click <strong>+ Add Contact</strong>.</div>
     </div></td></tr>`;
@@ -797,20 +882,13 @@ function renderTable() {
   }
 
   tbody.innerHTML = view.map(c => `
-    <tr data-id="${escapeAttr(c.id)}">
+    <tr class="clickable" data-id="${escapeAttr(c.id)}">
       <td><span class="supplier-tag ${escapeAttr(c.supplier || '')}" ${supplierTagStyle(c.supplier)}>${escapeHtml(c.supplier || '')}</span></td>
       <td>${escapeHtml(c.accountName || '')}</td>
       <td>${escapeHtml(c.branch || '')}</td>
-      <td>${escapeHtml(c.branchAddress || '')}</td>
       <td>${escapeHtml(c.branchCity || '')}</td>
       <td>${c.branchState ? `<span class="state-tag">${escapeHtml(c.branchState)}</span>` : ''}</td>
-      <td>${formatPhone(c.branchPhone)}</td>
-      <td>${escapeHtml(c.branchManager || '')}</td>
-      <td>${formatPhone(c.managerPhone)}</td>
       <td>${escapeHtml(c.salesperson || '')}</td>
-      <td>${formatPhone(c.salespersonPhone)}</td>
-      <td>${escapeHtml(c.rsm || '')}</td>
-      <td>${formatPhone(c.rsmPhone)}</td>
       <td class="actions">
         <button class="btn btn-ghost btn-icon" data-edit="${escapeAttr(c.id)}">Edit</button>
         <button class="btn btn-danger btn-icon" data-del="${escapeAttr(c.id)}">Delete</button>
@@ -910,17 +988,22 @@ function openEdit(contact) {
   const f = contact || {supplier: (suppliers[0] && suppliers[0].code) || "ABC"};
   document.getElementById("f_supplier").value = f.supplier || (suppliers[0] && suppliers[0].code) || "ABC";
   document.getElementById("f_accountName").value = f.accountName || "";
+  document.getElementById("f_region").value = f.region || "";
   document.getElementById("f_branch").value = f.branch || "";
   document.getElementById("f_branchAddress").value = f.branchAddress || "";
   document.getElementById("f_branchCity").value = f.branchCity || "";
   document.getElementById("f_branchState").value = f.branchState || "";
   document.getElementById("f_branchPhone").value = f.branchPhone || "";
+  document.getElementById("f_ordersEmail").value = f.ordersEmail || "";
   document.getElementById("f_branchManager").value = f.branchManager || "";
+  document.getElementById("f_mgrEmail").value = f.mgrEmail || "";
   document.getElementById("f_managerPhone").value = f.managerPhone || "";
   document.getElementById("f_salesperson").value = f.salesperson || "";
+  document.getElementById("f_repEmail").value = f.repEmail || "";
   document.getElementById("f_salespersonPhone").value = f.salespersonPhone || "";
   document.getElementById("f_rsm").value = f.rsm || "";
   document.getElementById("f_rsmPhone").value = f.rsmPhone || "";
+  document.getElementById("f_rsmEmail").value = f.rsmEmail || "";
   document.getElementById("editModal").classList.add("show");
   setTimeout(() => document.getElementById("f_accountName").focus(), 60);
 }
@@ -943,17 +1026,22 @@ async function saveContact() {
   const data = {
     supplier: supplierVal,
     accountName: account,
+    region: document.getElementById("f_region").value.trim(),
     branch: document.getElementById("f_branch").value.trim(),
     branchAddress: document.getElementById("f_branchAddress").value.trim(),
     branchCity: document.getElementById("f_branchCity").value.trim(),
     branchState: document.getElementById("f_branchState").value.trim().toUpperCase(),
     branchPhone: document.getElementById("f_branchPhone").value.trim(),
+    ordersEmail: document.getElementById("f_ordersEmail").value.trim(),
     branchManager: document.getElementById("f_branchManager").value.trim(),
+    mgrEmail: document.getElementById("f_mgrEmail").value.trim(),
     managerPhone: document.getElementById("f_managerPhone").value.trim(),
     salesperson: document.getElementById("f_salesperson").value.trim(),
+    repEmail: document.getElementById("f_repEmail").value.trim(),
     salespersonPhone: document.getElementById("f_salespersonPhone").value.trim(),
     rsm: document.getElementById("f_rsm").value.trim(),
-    rsmPhone: document.getElementById("f_rsmPhone").value.trim()
+    rsmPhone: document.getElementById("f_rsmPhone").value.trim(),
+    rsmEmail: document.getElementById("f_rsmEmail").value.trim()
   };
 
   const btn = document.getElementById("saveBtn");
@@ -1065,12 +1153,14 @@ async function saveSupplier() {
 function exportCSV() {
   const cols = [
     ["Supplier", "supplier"], ["Account Name", "accountName"],
-    ["Branch #", "branch"], ["Branch Address", "branchAddress"],
-    ["Branch City", "branchCity"], ["Branch State", "branchState"],
-    ["Branch Phone #", "branchPhone"], ["Branch Manager", "branchManager"],
-    ["Manager Phone #", "managerPhone"], ["Branch Rep", "salesperson"],
+    ["Region", "region"], ["Branch #", "branch"],
+    ["Branch Address", "branchAddress"], ["Branch City", "branchCity"],
+    ["Branch State", "branchState"], ["Branch Phone #", "branchPhone"],
+    ["Orders Email", "ordersEmail"], ["Branch Manager", "branchManager"],
+    ["Mgr Email", "mgrEmail"], ["Manager Phone #", "managerPhone"],
+    ["Branch Rep", "salesperson"], ["Rep Email", "repEmail"],
     ["Rep Phone #", "salespersonPhone"], ["RSM", "rsm"],
-    ["RSM Phone #", "rsmPhone"]
+    ["RSM Phone #", "rsmPhone"], ["RSM Email", "rsmEmail"]
   ];
   const esc = v => {
     const s = String(v ?? "");
@@ -1192,7 +1282,77 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
   } else if (delId) {
     const c = contacts.find(c => c.id === delId);
     if (c) openConfirm(c);
+  } else {
+    const row = e.target.closest("tr[data-id]");
+    if (row) {
+      const c = contacts.find(c => c.id === row.dataset.id);
+      if (c) openDetail(c);
+    }
   }
+});
+
+/* ============================================================
+   DETAIL PANEL
+   ============================================================ */
+let detailContactId = null;
+
+function openDetail(c) {
+  detailContactId = c.id;
+  document.getElementById("dp-title").textContent = c.accountName || "—";
+  document.getElementById("dp-sub").textContent = [c.supplier, c.branchCity, c.branchState].filter(Boolean).join(" · ");
+
+  const fp = v => {
+    if (!v) return "—";
+    const d = String(v).replace(/\D/g,"");
+    if (d.length === 10) return `<a href="tel:${d}">(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}</a>`;
+    return escapeHtml(v);
+  };
+  const fv = v => escapeHtml(v || "") || "—";
+
+  const fe = v => v ? `<a href="mailto:${escapeHtml(v)}">${escapeHtml(v)}</a>` : "—";
+
+  document.getElementById("dp-body").innerHTML = `
+    <div class="dp-section-label">Branch</div>
+    <div class="dp-row"><span class="dp-label">Region</span><span class="dp-val">${fv(c.region)}</span></div>
+    <div class="dp-row"><span class="dp-label">Branch #</span><span class="dp-val">${fv(c.branch)}</span></div>
+    <div class="dp-row"><span class="dp-label">Address</span><span class="dp-val">${fv(c.branchAddress)}</span></div>
+    <div class="dp-row"><span class="dp-label">City</span><span class="dp-val">${fv(c.branchCity)}</span></div>
+    <div class="dp-row"><span class="dp-label">State</span><span class="dp-val">${fv(c.branchState)}</span></div>
+    <div class="dp-row"><span class="dp-label">Phone #</span><span class="dp-val">${fp(c.branchPhone)}</span></div>
+    <div class="dp-row"><span class="dp-label">Orders Email</span><span class="dp-val">${fe(c.ordersEmail)}</span></div>
+    <div class="dp-section-label">Branch Manager</div>
+    <div class="dp-row"><span class="dp-label">Name</span><span class="dp-val">${fv(c.branchManager)}</span></div>
+    <div class="dp-row"><span class="dp-label">Email</span><span class="dp-val">${fe(c.mgrEmail)}</span></div>
+    <div class="dp-row"><span class="dp-label">Phone #</span><span class="dp-val">${fp(c.managerPhone)}</span></div>
+    <div class="dp-section-label">Branch Rep</div>
+    <div class="dp-row"><span class="dp-label">Name</span><span class="dp-val">${fv(c.salesperson)}</span></div>
+    <div class="dp-row"><span class="dp-label">Email</span><span class="dp-val">${fe(c.repEmail)}</span></div>
+    <div class="dp-row"><span class="dp-label">Phone #</span><span class="dp-val">${fp(c.salespersonPhone)}</span></div>
+    <div class="dp-section-label">RSM</div>
+    <div class="dp-row"><span class="dp-label">Name</span><span class="dp-val">${fv(c.rsm)}</span></div>
+    <div class="dp-row"><span class="dp-label">Phone #</span><span class="dp-val">${fp(c.rsmPhone)}</span></div>
+    <div class="dp-row"><span class="dp-label">Email</span><span class="dp-val">${fe(c.rsmEmail)}</span></div>
+  `;
+
+  document.getElementById("detailOverlay").classList.add("show");
+  document.getElementById("detailPanel").classList.add("show");
+}
+
+function closeDetail() {
+  document.getElementById("detailOverlay").classList.remove("show");
+  document.getElementById("detailPanel").classList.remove("show");
+  detailContactId = null;
+}
+
+document.getElementById("detailClose").addEventListener("click", closeDetail);
+document.getElementById("detailOverlay").addEventListener("click", closeDetail);
+document.getElementById("dp-edit-btn").addEventListener("click", () => {
+  const c = contacts.find(c => c.id === detailContactId);
+  if (c) { closeDetail(); openEdit(c); }
+});
+document.getElementById("dp-del-btn").addEventListener("click", () => {
+  const c = contacts.find(c => c.id === detailContactId);
+  if (c) { closeDetail(); openConfirm(c); }
 });
 
 /* ============================================================
