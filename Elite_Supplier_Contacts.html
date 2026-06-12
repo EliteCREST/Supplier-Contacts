@@ -23,6 +23,81 @@
   --success: #2E7D5B;
   --shadow: 0 1px 3px rgba(27,42,74,0.06), 0 4px 14px rgba(27,42,74,0.06);
 }
+[data-theme="dark"] {
+  --bg: #0F1620;
+  --panel: #1A2333;
+  --border: #2A3A52;
+  --muted: #7A90AA;
+  --text: #D8E4F0;
+  --row-alt: #151E2D;
+  --hover: #1F2F45;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 14px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .elite-header { background: #1A2333; border-color: #2A3A52; }
+[data-theme="dark"] thead th { background: #0F1C30; }
+[data-theme="dark"] .settings-dropdown { background: #1A2333; border-color: #2A3A52; }
+[data-theme="dark"] .settings-item:hover { background: #1F2F45; }
+[data-theme="dark"] select, [data-theme="dark"] .toolbar-input,
+[data-theme="dark"] .search input, [data-theme="dark"] .form-field input,
+[data-theme="dark"] .form-field select, [data-theme="dark"] .form-field textarea {
+  background: #1A2333; color: var(--text); border-color: #2A3A52;
+}
+[data-theme="dark"] .btn-ghost { background: #1A2333; color: var(--text); border-color: #2A3A52; }
+[data-theme="dark"] .btn-ghost:hover { background: var(--hover); color: var(--blue); }
+[data-theme="dark"] .modal { background: #1A2333; }
+[data-theme="dark"] .modal-foot { background: #151E2D; }
+[data-theme="dark"] .region-card { background: #151E2D; border-color: #2A3A52; }
+
+/* ---------- SETTINGS ---------- */
+.settings-wrap { position: relative; }
+.settings-btn {
+  background: transparent; border: none; cursor: pointer;
+  color: var(--muted); padding: 4px 6px;
+  border-radius: 4px; line-height: 1;
+  transition: color 120ms, background 120ms;
+}
+.settings-btn:hover { color: var(--navy); background: var(--hover); }
+[data-theme="dark"] .settings-btn:hover { color: var(--text); }
+.settings-btn svg { display: block; }
+.settings-dropdown {
+  display: none;
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(27,42,74,0.15);
+  min-width: 220px;
+  z-index: 100;
+  overflow: hidden;
+}
+.settings-dropdown.open { display: block; }
+.settings-dropdown-head {
+  padding: 10px 14px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.settings-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; font-size: 13px; color: var(--text);
+  cursor: pointer; transition: background 100ms;
+  text-decoration: none;
+}
+.settings-item:hover { background: var(--hover); }
+.settings-item-label { display: flex; align-items: center; gap: 8px; }
+.toggle-track {
+  width: 34px; height: 18px;
+  background: var(--border); border-radius: 9px;
+  position: relative; transition: background 200ms; flex-shrink: 0;
+}
+.toggle-track.on { background: var(--blue); }
+.toggle-thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: #fff; border-radius: 50%;
+  transition: transform 200ms;
+}
+.toggle-track.on .toggle-thumb { transform: translateX(16px); }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
@@ -454,6 +529,31 @@ footer .brand-strip {
     <div class="meta-block">
       <div class="count" id="totalCount">0</div>
       <div class="count-label">Contacts</div>
+      <div class="settings-wrap" style="margin-top:8px;display:flex;justify-content:flex-end;">
+        <button class="settings-btn" id="settingsBtn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+        <div class="settings-dropdown" id="settingsDropdown">
+          <div class="settings-dropdown-head">Settings</div>
+          <div class="settings-item" id="themeToggleItem">
+            <span class="settings-item-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              Dark Mode
+            </span>
+            <div class="toggle-track" id="themeToggleTrack">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <a class="settings-item" id="settingsSheetBtn" href="#" target="_blank" rel="noopener">
+            <span class="settings-item-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Open Google Sheet ↗
+            </span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -1530,6 +1630,45 @@ document.getElementById("dp-edit-btn").addEventListener("click", () => {
 document.getElementById("dp-del-btn").addEventListener("click", () => {
   const c = contacts.find(c => c.id === detailContactId);
   if (c) { closeDetail(); openConfirm(c); }
+});
+
+/* ============================================================
+   SETTINGS — DARK MODE + SHEET LINK
+   ============================================================ */
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsDropdown = document.getElementById("settingsDropdown");
+const themeToggleItem = document.getElementById("themeToggleItem");
+const themeToggleTrack = document.getElementById("themeToggleTrack");
+
+// Set sheet link
+document.getElementById("settingsSheetBtn").href = CONFIG.SHEET_URL;
+
+// Init theme from localStorage
+let darkMode = localStorage.getItem("elite_dark_mode") === "true";
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+  themeToggleTrack.classList.toggle("on", darkMode);
+}
+applyTheme();
+
+// Toggle dropdown
+settingsBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  settingsDropdown.classList.toggle("open");
+});
+
+// Close dropdown on outside click
+document.addEventListener("click", (e) => {
+  if (!settingsBtn.contains(e.target) && !settingsDropdown.contains(e.target)) {
+    settingsDropdown.classList.remove("open");
+  }
+});
+
+// Toggle dark mode
+themeToggleItem.addEventListener("click", () => {
+  darkMode = !darkMode;
+  localStorage.setItem("elite_dark_mode", darkMode);
+  applyTheme();
 });
 
 /* ============================================================
