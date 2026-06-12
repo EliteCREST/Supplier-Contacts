@@ -574,13 +574,13 @@ footer .brand-strip {
     <div class="logo-block">
       <div class="logo-mark">E</div>
       <div class="logo-text">
-        ELITE<br><span class="sub">FAMILY OF BRANDS</span>
+        ELITE<br><span class="sub">FAMILY OF BRANDS</span><br><span class="sub" style="color:var(--gold);letter-spacing:0.5px;">v1.9</span>
       </div>
     </div>
     <div class="title-block">
       <h1>Supplier Contacts</h1>
       <div class="underline"></div>
-      <div class="subtitle" id="headerSubtitle">Branch &amp; Salesperson Directory</div>
+      <div class="subtitle" id="headerSubtitle">Supplier Branch Directory</div>
     </div>
     <div class="meta-block">
       <div class="count" id="totalCount">0</div>
@@ -878,7 +878,7 @@ footer .brand-strip {
 </div>
 
 <footer>
-  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.9
+  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only
 </footer>
 
 <script>
@@ -1236,10 +1236,9 @@ function refreshSupplierOptions() {
   if (suppliers.some(s => s.code === prevFilter)) filterSel.value = prevFilter;
   if (suppliers.some(s => s.code === prevForm)) formSel.value = prevForm;
 
-  // Update header subtitle to reflect known suppliers
-  const codes = suppliers.map(s => s.code).join(" · ");
+  // Update header subtitle — static text, suppliers shown in filter only
   const sub = document.getElementById("headerSubtitle");
-  if (sub) sub.innerHTML = `${escapeHtml(codes)} &nbsp;—&nbsp; Branch &amp; Salesperson Directory`;
+  if (sub) sub.textContent = "Supplier Branch Directory";
 }
 
 /* ============================================================
