@@ -337,6 +337,27 @@ tbody td.actions { white-space: nowrap; text-align: right; width: 1%; }
 .priority-tag.secondary { background: #EAF5EF; color: #2E7D5B; }
 .priority-tag.tertiary  { background: #F5F0E6; color: #854F0B; }
 
+/* ---------- REGION PANEL ---------- */
+.region-card {
+  background: var(--row-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.region-card-title {
+  font-size: 13px; font-weight: 900;
+  color: var(--navy); letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.region-card-brand {
+  font-size: 11px; color: var(--blue);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 10px;
+}
+.region-card .dp-row { font-size: 12px; padding: 5px 0; }
+.region-card .dp-label { min-width: 70px; font-size: 10px; }
+
 /* ---------- DETAIL PANEL ---------- */
 .detail-overlay {
   display: none;
@@ -465,9 +486,16 @@ footer .brand-strip {
       <option value="">All</option>
     </select>
   </div>
+  <div class="filter-group">
+    <label for="regionFilter">Region</label>
+    <select id="regionFilter">
+      <option value="">All</option>
+    </select>
+  </div>
   <button class="btn btn-ghost" id="refreshBtn" title="Pull latest data from Google Sheet">↻ Refresh</button>
   <button class="btn btn-ghost" id="exportBtn" title="Export visible rows to CSV">Export CSV</button>
   <a class="btn btn-ghost" id="sheetBtn" target="_blank" rel="noopener" title="Open the source Google Sheet in a new tab">Open Sheet ↗</a>
+  <button class="btn btn-ghost" id="regionsBtn" title="View all regions">Regions</button>
   <button class="btn btn-ghost" id="manageSuppliersBtn" title="Add a new supplier company">+ Add Supplier</button>
   <button class="btn btn-primary" id="addBtn">+ Add Contact</button>
 </div>
@@ -540,7 +568,9 @@ footer .brand-strip {
         </div>
         <div class="form-field">
           <label>Region</label>
-          <input id="f_region" type="text" placeholder="e.g. Midwest">
+          <select id="f_region">
+            <option value="">— Select —</option>
+          </select>
         </div>
         <div class="form-field">
           <label>Branch #</label>
@@ -659,6 +689,21 @@ footer .brand-strip {
   </div>
 </div>
 
+<!-- ============== REGIONS PANEL ============== -->
+<div class="detail-overlay" id="regionsOverlay"></div>
+<div class="detail-panel" id="regionsPanel">
+  <div class="detail-panel-head">
+    <div>
+      <div class="dp-title">Regions</div>
+      <div class="dp-sub">Elite Family of Brands — Regional Directory</div>
+    </div>
+    <button class="detail-panel-close" id="regionsClose">×</button>
+  </div>
+  <div class="detail-panel-body" id="regions-body">
+    <div class="loading">Loading regions…</div>
+  </div>
+</div>
+
 <!-- ============== DETAIL PANEL ============== -->
 <div class="detail-overlay" id="detailOverlay"></div>
 <div class="detail-panel" id="detailPanel">
@@ -677,7 +722,7 @@ footer .brand-strip {
 </div>
 
 <footer>
-  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.4
+  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.5
 </footer>
 
 <script>
@@ -696,6 +741,7 @@ const CONFIG = {
    ============================================================ */
 let contacts = [];
 let suppliers = []; // [{code, name}, ...]
+let regions = [];   // [{region, brandName, state, address, city, zip, phone}, ...]
 let view = [];
 let sortKey = "supplier";
 let sortDir = 1;
@@ -798,6 +844,27 @@ const api = {
     }
   },
 
+  async listRegions() {
+    if (this.isCloud()) {
+      const r = await fetch(CONFIG.API_URL + "?action=listRegions");
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "Load regions failed");
+      return j.regions || [];
+    } else {
+      return [
+        {region:"Milwaukee", brandName:"123 Exteriors", state:"Wisconsin", address:"2110 Pewaukee Rd Ste 110A", city:"Waukesha", zip:"53188", phone:"262-347-4599"},
+        {region:"Chicago", brandName:"123 Exteriors - Chicago", state:"Illinois", address:"2777 Finley Rd Ste 17", city:"Downers Grove", zip:"60515", phone:"630-517-4771"},
+        {region:"Cleveland", brandName:"123 Exteriors - Cleveland", state:"Ohio", address:"20033 Detroit Rd Ste A", city:"Rocky River", zip:"44116", phone:"440-671-3400"},
+        {region:"Albuquerque", brandName:"Albuquerque, NM", state:"New Mexico", address:"", city:"Albuquerque", zip:"", phone:""},
+        {region:"Pittsburg", brandName:"Aspen Exteriors, Inc - PA", state:"Pennsylvania", address:"900 Commerce Court, Suite 906", city:"Moon Township", zip:"15108", phone:"412-284-6200"},
+        {region:"Minneapolis", brandName:"Aspen Exteriors, Inc - Sales Office", state:"Minnesota", address:"6897 139th Lane NW Ste 102", city:"Ramsey", zip:"55303", phone:"763-434-3687"},
+        {region:"Phoenix", brandName:"Reimagine Roofing & Construction", state:"Arizona - Main Office", address:"1100 E Washington St Ste 200", city:"Phoenix", zip:"85034", phone:"480-900-7663"},
+        {region:"Indianapolis", brandName:"Universal Roofing", state:"Indiana", address:"5530 W 84th St", city:"Indianapolis", zip:"46268", phone:"317-257-0779"},
+        {region:"St Louis", brandName:"Wildwood Roofing & Construction", state:"Missouri", address:"437 Old State Rd", city:"Ellisville", zip:"63021", phone:"636-400-7000"}
+      ];
+    }
+  },
+
   async listSuppliers() {
     if (this.isCloud()) {
       const r = await fetch(CONFIG.API_URL + "?action=listSuppliers");
@@ -876,11 +943,13 @@ function applyFilters() {
   const sup = document.getElementById("supplierFilter").value;
   const brand = document.getElementById("brandFilter").value;
   const state = document.getElementById("stateFilter").value;
+  const region = document.getElementById("regionFilter").value;
 
   view = contacts.filter(c => {
     if (sup && c.supplier !== sup) return false;
     if (brand && c.accountName !== brand) return false;
     if (state && c.branchState !== state) return false;
+    if (region && c.region !== region) return false;
     if (q) {
       const blob = [c.accountName, c.salesperson, c.salespersonPhone, c.branch,
                     c.branchAddress, c.branchCity, c.branchState, c.branchManager,
@@ -953,6 +1022,7 @@ function renderHeaderSort() {
 function refreshFilterOptions() {
   const brandSel = document.getElementById("brandFilter");
   const stateSel = document.getElementById("stateFilter");
+  const regionFilterSel = document.getElementById("regionFilter");
   const accountList = document.getElementById("accountList");
 
   const brands = [...new Set(contacts.map(c => c.accountName).filter(Boolean))].sort();
@@ -960,16 +1030,31 @@ function refreshFilterOptions() {
 
   const prevBrand = brandSel.value;
   const prevState = stateSel.value;
+  const prevRegion = regionFilterSel.value;
 
   brandSel.innerHTML = `<option value="">All</option>` +
     brands.map(b => `<option value="${escapeAttr(b)}">${escapeHtml(b)}</option>`).join("");
   stateSel.innerHTML = `<option value="">All</option>` +
     states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+  regionFilterSel.innerHTML = `<option value="">All</option>` +
+    regions.map(r => `<option value="${escapeAttr(r.region)}">${escapeHtml(r.region)}</option>`).join("");
 
   if (brands.includes(prevBrand)) brandSel.value = prevBrand;
   if (states.includes(prevState)) stateSel.value = prevState;
+  if (regions.some(r => r.region === prevRegion)) regionFilterSel.value = prevRegion;
 
   accountList.innerHTML = brands.map(b => `<option value="${escapeAttr(b)}">`).join("");
+
+  // Also refresh region form dropdown
+  refreshRegionFormOptions();
+}
+
+function refreshRegionFormOptions() {
+  const sel = document.getElementById("f_region");
+  const prev = sel.value;
+  sel.innerHTML = `<option value="">— Select —</option>` +
+    regions.map(r => `<option value="${escapeAttr(r.region)}">${escapeHtml(r.region)}</option>`).join("");
+  if (regions.some(r => r.region === prev)) sel.value = prev;
 }
 
 function refreshSupplierOptions() {
@@ -1292,6 +1377,7 @@ document.getElementById("searchInput").addEventListener("input", applyFilters);
 document.getElementById("supplierFilter").addEventListener("change", applyFilters);
 document.getElementById("brandFilter").addEventListener("change", applyFilters);
 document.getElementById("stateFilter").addEventListener("change", applyFilters);
+document.getElementById("regionFilter").addEventListener("change", applyFilters);
 document.getElementById("addBtn").addEventListener("click", () => openEdit(null));
 document.getElementById("saveBtn").addEventListener("click", saveContact);
 document.getElementById("exportBtn").addEventListener("click", exportCSV);
@@ -1338,6 +1424,45 @@ document.getElementById("tableBody").addEventListener("click", (e) => {
     }
   }
 });
+
+/* ============================================================
+   REGIONS PANEL
+   ============================================================ */
+function openRegionsPanel() {
+  const body = document.getElementById("regions-body");
+  if (regions.length === 0) {
+    body.innerHTML = `<div class="empty-state"><div class="big">No Regions Found</div><div>Check the Regions tab in the Google Sheet.</div></div>`;
+  } else {
+    const fp = v => {
+      if (!v) return "—";
+      const d = String(v).replace(/\D/g,"");
+      if (d.length === 10) return `<a href="tel:${d}">(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}</a>`;
+      return escapeHtml(v);
+    };
+    body.innerHTML = regions.map(r => `
+      <div class="region-card">
+        <div class="region-card-title">${escapeHtml(r.region)}</div>
+        <div class="region-card-brand">${escapeHtml(r.brandName || '')}</div>
+        <div class="dp-row"><span class="dp-label">State</span><span class="dp-val">${escapeHtml(r.state || '—')}</span></div>
+        <div class="dp-row"><span class="dp-label">Address</span><span class="dp-val">${escapeHtml(r.address || '—')}</span></div>
+        <div class="dp-row"><span class="dp-label">City</span><span class="dp-val">${escapeHtml(r.city || '—')}</span></div>
+        <div class="dp-row"><span class="dp-label">Zip</span><span class="dp-val">${escapeHtml(r.zip || '—')}</span></div>
+        <div class="dp-row"><span class="dp-label">Phone</span><span class="dp-val">${fp(r.phone)}</span></div>
+      </div>
+    `).join("");
+  }
+  document.getElementById("regionsOverlay").classList.add("show");
+  document.getElementById("regionsPanel").classList.add("show");
+}
+
+function closeRegionsPanel() {
+  document.getElementById("regionsOverlay").classList.remove("show");
+  document.getElementById("regionsPanel").classList.remove("show");
+}
+
+document.getElementById("regionsBtn").addEventListener("click", openRegionsPanel);
+document.getElementById("regionsClose").addEventListener("click", closeRegionsPanel);
+document.getElementById("regionsOverlay").addEventListener("click", closeRegionsPanel);
 
 /* ============================================================
    DETAIL PANEL
@@ -1411,7 +1536,6 @@ document.getElementById("dp-del-btn").addEventListener("click", () => {
    INITIAL LOAD
    ============================================================ */
 (async function init() {
-  // Hydrate suppliers from localStorage immediately so the dropdowns aren't empty
   try {
     const cached = localStorage.getItem(CONFIG.LOCAL_SUPPLIERS_KEY);
     suppliers = cached ? JSON.parse(cached) : DEFAULT_SUPPLIERS.slice();
@@ -1419,6 +1543,16 @@ document.getElementById("dp-del-btn").addEventListener("click", () => {
     suppliers = DEFAULT_SUPPLIERS.slice();
   }
   refreshSupplierOptions();
+
+  // Load regions early so form dropdown is populated
+  try {
+    regions = await api.listRegions();
+    refreshRegionFormOptions();
+    refreshFilterOptions();
+  } catch(e) {
+    regions = [];
+  }
+
   await refreshFromSheet(false);
 })();
 </script>
