@@ -27,26 +27,62 @@
   --bg: #0F1620;
   --panel: #1A2333;
   --border: #2A3A52;
-  --muted: #7A90AA;
+  --muted: #8AA0BC;
   --text: #D8E4F0;
   --row-alt: #151E2D;
   --hover: #1F2F45;
   --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 14px rgba(0,0,0,0.3);
 }
 [data-theme="dark"] .elite-header { background: #1A2333; border-color: #2A3A52; }
-[data-theme="dark"] thead th { background: #0F1C30; }
+[data-theme="dark"] .logo-text { color: #D8E4F0; }
+[data-theme="dark"] .logo-text .sub { color: #8AA0BC; }
+[data-theme="dark"] .title-block h1 { color: #D8E4F0; }
+[data-theme="dark"] .meta-block .count { color: #D8E4F0; }
+[data-theme="dark"] thead th { background: #0D1929; }
+[data-theme="dark"] .state-tag { background: #1F3050; color: #93C5FD; }
+[data-theme="dark"] tbody tr { border-color: #2A3A52; }
+[data-theme="dark"] tbody tr:nth-child(even) { background: #151E2D; }
+[data-theme="dark"] tbody tr:hover { background: #1F2F45; }
+[data-theme="dark"] tbody td { color: #D8E4F0; }
+[data-theme="dark"] .supplier-tag.ABC { background: #1F5FAD; }
+[data-theme="dark"] .supplier-tag.RBS { background: #2A3A52; }
+[data-theme="dark"] .supplier-tag.SRS { background: #C9A961; color: #0F1620; }
+[data-theme="dark"] .priority-tag.primary   { background: #1A3A5C; color: #93C5FD; }
+[data-theme="dark"] .priority-tag.secondary { background: #1A3A2A; color: #6EE7B7; }
+[data-theme="dark"] .priority-tag.tertiary  { background: #3A2A10; color: #FCD34D; }
 [data-theme="dark"] .settings-dropdown { background: #1A2333; border-color: #2A3A52; }
+[data-theme="dark"] .settings-item { color: #D8E4F0; }
 [data-theme="dark"] .settings-item:hover { background: #1F2F45; }
 [data-theme="dark"] select, [data-theme="dark"] .toolbar-input,
 [data-theme="dark"] .search input, [data-theme="dark"] .form-field input,
 [data-theme="dark"] .form-field select, [data-theme="dark"] .form-field textarea {
-  background: #1A2333; color: var(--text); border-color: #2A3A52;
+  background: #1A2333; color: #D8E4F0; border-color: #2A3A52;
 }
-[data-theme="dark"] .btn-ghost { background: #1A2333; color: var(--text); border-color: #2A3A52; }
-[data-theme="dark"] .btn-ghost:hover { background: var(--hover); color: var(--blue); }
+[data-theme="dark"] .toolbar { background: #0F1620; }
+[data-theme="dark"] .filter-group label { color: #8AA0BC; }
+[data-theme="dark"] .btn-ghost { background: #1A2333; color: #D8E4F0; border-color: #2A3A52; }
+[data-theme="dark"] .btn-ghost:hover { background: var(--hover); color: #93C5FD; border-color: #3A5A8A; }
+[data-theme="dark"] .btn-primary { background: #1F5FAD; border-color: #1F5FAD; }
 [data-theme="dark"] .modal { background: #1A2333; }
-[data-theme="dark"] .modal-foot { background: #151E2D; }
+[data-theme="dark"] .modal-head { background: #0D1929; }
+[data-theme="dark"] .modal-foot { background: #151E2D; border-color: #2A3A52; }
+[data-theme="dark"] .form-field label { color: #8AA0BC; }
+[data-theme="dark"] .detail-panel { background: #1A2333; }
+[data-theme="dark"] .detail-panel-head { background: #0D1929; }
+[data-theme="dark"] .detail-panel-foot { background: #151E2D; border-color: #2A3A52; }
+[data-theme="dark"] .dp-label { color: #8AA0BC; }
+[data-theme="dark"] .dp-val { color: #D8E4F0; }
+[data-theme="dark"] .dp-row { border-color: #2A3A52; }
+[data-theme="dark"] .dp-section-label { color: #93C5FD; border-color: #2A3A52; }
 [data-theme="dark"] .region-card { background: #151E2D; border-color: #2A3A52; }
+[data-theme="dark"] .region-card-title { color: #D8E4F0; }
+[data-theme="dark"] .region-card-brand { color: #93C5FD; }
+[data-theme="dark"] .callout-inner { background: #1A2E45; color: #93C5FD; }
+[data-theme="dark"] .callout-inner.error { background: #3A1A1A; color: #FCA5A5; }
+[data-theme="dark"] .callout-inner.success { background: #1A3A2A; color: #6EE7B7; }
+[data-theme="dark"] footer { border-color: #2A3A52; color: #8AA0BC; }
+[data-theme="dark"] .table-card { border-color: #2A3A52; background: #1A2333; }
+[data-theme="dark"] .empty-state .big { color: #D8E4F0; }
 
 /* ---------- SETTINGS ---------- */
 .settings-wrap { position: relative; }
@@ -822,7 +858,7 @@ footer .brand-strip {
 </div>
 
 <footer>
-  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.7
+  ELITE FAMILY OF BRANDS <span class="brand-strip"></span> Supplier Contacts <span class="brand-strip"></span> Internal Use Only <span class="brand-strip"></span> v1.8
 </footer>
 
 <script>
